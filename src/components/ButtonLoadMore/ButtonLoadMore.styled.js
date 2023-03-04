@@ -4,7 +4,7 @@ export const Button = styled.button`
   padding: 8px 16px;
   border-radius: 2px;
   background-color: #3f51b5;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--animation-duration) var(--timing-function);
   text-align: center;
   display: inline-block;
   color: #fff;

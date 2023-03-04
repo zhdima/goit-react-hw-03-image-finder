@@ -12,3 +12,10 @@ export const ImageGalleryList = styled.ul`
   margin-left: auto;
   margin-right: auto;
 `;
+
+export const ErrorInfo = styled.p`
+  text-align: center;
+  color: tomato;
+  font-size: 18px;
+  font-weight: 500;
+`;

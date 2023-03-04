@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { ModalOverlay, ModalContent } from './Modal.styled';
 import { createPortal } from 'react-dom';
+import { ModalOverlay, ModalContent, ModalButtonClose } from './Modal.styled';
+import { BsXLg } from 'react-icons/bs';
 
 export class Modal extends Component {
   
@@ -34,7 +35,12 @@ export class Modal extends Component {
     return createPortal(
       <ModalOverlay onClick={this.handleOverlayClick}>
         <ModalContent>
+          <ModalButtonClose type="button" onClick={this.props.onClose}>
+            <BsXLg size="12"/>
+          </ModalButtonClose>
+
           {this.props.children}
+
         </ModalContent>
       </ModalOverlay>,
     document.getElementById('modal-root'));

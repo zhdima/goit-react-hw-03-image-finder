@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { ImageGalleryList } from './ImageGallery.styled';
+import { ImageGalleryList, ErrorInfo } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 import { ButtonLoadMore } from '../ButtonLoadMore/ButtonLoadMore';
+import { Loader } from '../Loader/Loader';
+import toast, { Toaster } from 'react-hot-toast';
 import SearchService from '../../services/search-service';
 
 const searchService = new SearchService();
@@ -26,6 +28,7 @@ export class ImageGallery extends Component {
   state = {
     results: [],
     status: Status.IDLE,
+    error: '',
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -50,13 +53,16 @@ export class ImageGallery extends Component {
       const data = await searchService.getNextData();
 
       if (!data || (data.length === 0)) {
-        alert('Sorry, there are no images matching your search query. Please try again.');
-        this.setState({ results: [], status: Status.ERROR });
+        this.setState({
+          results: [],
+          status: Status.ERROR,
+          error: 'Sorry, there are no images matching your search query. Please try again.'
+        });
         return;
       }
         
       if (searchService.page === 1) {
-        console.log(`We found ${searchService.resultsQty} images.`);
+        toast.success(`We found ${searchService.resultsQty} images.`);
       }
 
       this.setState(prevState => ({
@@ -65,8 +71,11 @@ export class ImageGallery extends Component {
       }));
 
     } catch (err) {
-      console.error(err);
-      this.setState({ results: [], status: Status.ERROR });
+        this.setState({
+          results: [],
+          status: Status.ERROR,
+          error: String(err)
+        });
     }
   }
   
@@ -76,7 +85,7 @@ export class ImageGallery extends Component {
   }
 
   render() {
-    const { results } = this.state;
+    const { results, status, error } = this.state;
 
     return (
       <>
@@ -85,9 +94,16 @@ export class ImageGallery extends Component {
             <ImageGalleryItem key={item.id} item={item} />
           ))}
         </ImageGalleryList>
-        {this.state.status === Status.IS_MORE &&
+        {status === Status.LOADING &&
+          <Loader />
+        }
+        {status === Status.IS_MORE &&
           <ButtonLoadMore onClick={this.onLoadMore} />
         }
+        {status === Status.ERROR &&
+          <ErrorInfo>{error}</ErrorInfo>
+        }
+        <Toaster position="top-right"/>
       </>
     );
   }  
