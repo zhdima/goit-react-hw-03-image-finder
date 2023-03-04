@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-//import { ContactItem } from '../ContactItem/ContactItem';
-import { ListItem } from './ImageGallery.styled';
+import { ImageGalleryList } from './ImageGallery.styled';
+import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
+import { ButtonLoadMore } from '../ButtonLoadMore/ButtonLoadMore';
 import SearchService from '../../services/search-service';
 
 const searchService = new SearchService();
@@ -32,6 +33,14 @@ export class ImageGallery extends Component {
       searchService.setNewQuery(this.props.searchQuery, IMAGES_PER_PAGE);
       this.performQuery();
     }
+    
+    if ((this.state.results !== prevState.results) && (searchService.page > 1)) {
+      window.scrollTo({
+        left: 0,
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }  
   }
 
   performQuery = async() => {
@@ -70,15 +79,16 @@ export class ImageGallery extends Component {
     const { results } = this.state;
 
     return (
-      <ul>
-        {results.map(item => (
-          <ListItem key={item.id}>
-            {/* <ContactItem contact={contact} onDeleteContact={onDeleteContact} /> */}
-            {item.webformatURL}
-            {item.largeImageURL}
-          </ListItem>
-        ))}
-      </ul>
+      <>
+        <ImageGalleryList>
+          {results.map(item => (
+            <ImageGalleryItem key={item.id} item={item} />
+          ))}
+        </ImageGalleryList>
+        {this.state.status === Status.IS_MORE &&
+          <ButtonLoadMore onClick={this.onLoadMore} />
+        }
+      </>
     );
   }  
 };
