@@ -31,11 +31,14 @@ export const Form = styled(FormikForm)`
 `;
 
 export const FormField = styled.label`
+  width: 100%;
+  height: 100%;
 `;
 
 export const SearchInput = styled(Field)`
   display: inline-block;
   width: 100%;
+  height: 100%;
   font: inherit;
   font-size: 20px;
   border: none;
